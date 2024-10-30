@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1 id="welcomeMessage">Welcome!</h1>
+            <div id="profileInfo">
+                <p><strong>First Name:</strong> <span id="firstname"></span></p>
+                <p><strong>Last Name:</strong> <span id="lastname"></span></p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="patientprofile.html">View Your Profile</a></li> <!-- Updated link -->
+                    <li><a href="/patients/appointments/schedule">Schedule Appointment</a></li>
+                    <li><a href="/patients/appointments/history">View Appointment History</a></li>
+                    <li><a href="/patients/doctors">View Doctors</a></li>
+                    <li><a href="#" id="logoutBtn">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section>
+                <h2>Your Profile Information</h2>
+                <p><strong>Phone Number:</strong> <span id="phone"></span></p>
+                <p><strong>Date of Birth:</strong> <span id="date_of_birth"></span></p>
+                <p><strong>Address:</strong> <span id="address"></span></p>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Telemedicine App</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const patientData = JSON.parse(localStorage.getItem('patientData'));
+            if (!patientData) {
+                alert("No patient data found. Please log in.");
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Populate the dashboard with patient data
+            document.getElementById('welcomeMessage').textContent = `Welcome, ${patientData.first_name} ${patientData.last_name}!`;
+            document.getElementById('firstname').textContent = patientData.first_name;
+            document.getElementById('lastname').textContent = patientData.last_name;
+            document.getElementById('phone').textContent = patientData.phone || 'Not available';
+            document.getElementById('date_of_birth').textContent = patientData.date_of_birth ? new Date(patientData.date_of_birth).toLocaleDateString() : 'Not available';
+            document.getElementById('address').textContent = patientData.address || 'Not available';
+
+            // Logout function to clear storage and redirect to login
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('patientData');
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+
+</html>

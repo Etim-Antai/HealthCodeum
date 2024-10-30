@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Logout</title>
+</head>
+<body>
+    <h1>Patient Logout</h1>
+    <p>Are you sure you want to log out?</p>
+    <button id="logoutButton">Logout</button>
+    <p id="message"></p>
+    <p id="loginPrompt" style="display:none;">You can log in again by clicking the link below:</p>
+    <a href="login.html" id="loginLink" style="display:none;">Login Again</a> <!-- Hidden link -->
+
+    <script>
+        // Handle logout button click
+        document.getElementById('logoutButton').addEventListener('click', async function() {
+            try {
+                const response = await fetch('http://localhost:9900/patients/logout', {
+                    method: 'GET', // Use GET for logout requests
+                    credentials: 'include' // Include cookies or session data
+                });
+
+                const result = await response.json();
+                const messageElement = document.getElementById('message');
+                const loginLink = document.getElementById('loginLink');
+                const loginPrompt = document.getElementById('loginPrompt'); // Get the login prompt element
+
+                if (response.ok) {
+                    messageElement.textContent = result.message; // Show success message
+                    loginPrompt.style.display = 'block'; // Show the login prompt
+                    loginLink.style.display = 'block'; // Show the login link
+                } else {
+                    messageElement.textContent = 'Error: ' + result.message; // Show error message
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Logout failed!');
+            }
+        });
+    </script>
+</body>
+</html>
