@@ -61,69 +61,67 @@
         </div>
     </div>
     <script>
-        document.getElementById('login-form').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const loginButton = document.getElementById('login-button');
-            loginButton.disabled = true; // Disable the button to prevent multiple submissions
 
-            const feedback = document.getElementById('feedback');
-            feedback.textContent = "Logging in...";
-            feedback.className = 'loading'; // Show loading message
+    document.getElementById('login-form').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+        const loginButton = document.getElementById('login-button');
+        loginButton.disabled = true; // Disable the button to prevent multiple submissions
 
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData.entries()); // Extract form data
+        const feedback = document.getElementById('feedback');
+        feedback.textContent = "Logging in...";
+        feedback.className = 'loading'; // Show loading message
 
-            fetch('http://localhost:9900/patients/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.message || 'Login failed');
-                    });
-                }
-                return response.json(); // Parse response as JSON
-            })
-            .then(data => {
-                console.log('Login Response:', data); // Log the entire response for debugging
-                if (data.success) {
-                    // Save token and patient data in localStorage
-                    localStorage.setItem('authToken', data.token); // Store the auth token
-                    localStorage.setItem('patientData', JSON.stringify({
-                        email: data.email,
-                        first_name: data.first_name,
-                        last_name: data.last_name,
-                        phone: data.phone,
-                        date_of_birth: data.date_of_birth,
-                        gender: data.gender,
-                        address: data.address
-                    }));
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries()); // Extract form data
 
-                    feedback.textContent = `Login successful. Welcome back, ${data.first_name} ${data.last_name}!`;
-                    feedback.className = 'success'; // Indicates success
+        console.log('Form data submitted:', data); // Log form data
 
-                    // Redirect to profile after a delay
-                    setTimeout(() => {
-                        window.location.href = 'http://localhost:9900/patients/profile.html'; // Ensure this path is correct
-                    }, 2000); // Delay for 2 seconds
-                } else {
-                    feedback.textContent = data.message || "Invalid email or password.";
-                    feedback.className = ''; // Reset class for error
-                }
-            })
-            .catch(error => {
-                console.error('Fetch error:', error); // Log error for debugging
-                feedback.textContent = "Error logging in: " + error.message;
-                feedback.className = 'error'; // Indicate error
-            })
-            .finally(() => {
-                loginButton.disabled = false; // Always re-enable the login button
-            });
+        fetch('http://localhost:9900/patients/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => {
+            console.log('Response status:', response.status); // Log response status
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Login failed');
+                });
+            }
+            return response.json(); // Parse response as JSON
+        })
+        .then(data => {
+            console.log('Login Response:', data); // Log the entire response for debugging
+            if (data.success) {
+                // Save token and patient data in localStorage
+                localStorage.setItem('authToken', data.token); // Store the auth token
+                localStorage.setItem('patientData', JSON.stringify(data.patientData)); // Store the full patient data as returned
+
+                feedback.textContent = `Login successful. Welcome back, ${data.patientData.first_name} ${data.patientData.last_name}!`;
+                feedback.className = 'success'; // Indicates success
+
+                // Redirect to the dashboard after a short delay
+                setTimeout(() => {
+                    console.log('Redirecting to dashboard...'); // Log before redirect
+                    window.location.href = 'dashboard2.html'; // Update if needed
+                }, 2000); // Delay for 2 seconds
+            } else {
+                feedback.textContent = data.message || "Invalid email or password.";
+                feedback.className = ''; // Reset class for error
+            }
+        })
+        .catch(error => {
+            console.error('Error during login:', error); // Log any errors
+            feedback.textContent = error.message;
+            feedback.className = ''; // Reset class for error
+        })
+        .finally(() => {
+            loginButton.disabled = false; // Re-enable the button
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>

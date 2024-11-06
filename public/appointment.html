@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Form styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin: 10px 0 5px;
+            text-align: left;
+        }
+        input, select, button {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Book Appointment</h2>
+    <form id="appointmentForm">
+        <!-- Doctor selection -->
+        <label for="doctor_id">Select Doctor:</label>
+        <select id="doctor_id" name="doctor_id" required>
+            <option value="" disabled selected>Select a doctor</option>
+            <!-- Options will be populated dynamically -->
+        </select>
+
+        <!-- Appointment date -->
+        <label for="appointment_date">Appointment Date:</label>
+        <input type="date" id="appointment_date" name="appointment_date" required>
+
+        <!-- Appointment time -->
+        <label for="appointment_time">Appointment Time:</label>
+        <input type="time" id="appointment_time" name="appointment_time" required>
+
+        <!-- Submit button -->
+        <button type="submit">Book Appointment</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const doctorSelect = document.getElementById("doctor_id");
+
+        // Fetch list of doctors to populate the dropdown
+        try {
+            const response = await fetch("http://localhost:9900/doctors", {
+                method: "GET"
+            });
+            if (!response.ok) throw new Error("Failed to fetch doctors.");
+
+            const doctors = await response.json();
+            doctors.forEach(doctor => {
+                const option = document.createElement("option");
+                option.value = doctor.doctor_id;
+                option.textContent = `${doctor.first_name} ${doctor.last_name}`;
+                doctorSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Error loading doctors:", error);
+        }
+
+        // Handle form submission
+        document.getElementById("appointmentForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const appointmentData = {
+                doctor_id: doctorSelect.value,
+                appointment_date: document.getElementById("appointment_date").value,
+                appointment_time: document.getElementById("appointment_time").value,
+                status: "Scheduled"
+            };
+
+            try {
+                const response = await fetch("http://localhost:9900/appointments", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(appointmentData)
+                });
+
+                if (response.ok) {
+                    alert("Appointment booked successfully!");
+                    window.location.href = "appointment-history.html"; // Redirect to view appointment history
+                } else {
+                    const result = await response.json();
+                    alert("Failed to book appointment: " + result.message);
+                }
+            } catch (error) {
+                console.error("Error booking appointment:", error);
+                alert("An error occurred while booking the appointment.");
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

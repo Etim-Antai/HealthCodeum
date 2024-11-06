@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Dashboard</title>
     <link rel="stylesheet" href="/styles/styles.css">
 </head>
-
 <body>
     <div class="container">
         <header>
@@ -18,7 +16,7 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="patientprofile.html">View Your Profile</a></li> <!-- Updated link -->
+                    <li><a href="patientprofile.html">View Your Profile</a></li>
                     <li><a href="/patients/appointments/schedule">Schedule Appointment</a></li>
                     <li><a href="/patients/appointments/history">View Appointment History</a></li>
                     <li><a href="/patients/doctors">View Doctors</a></li>
@@ -37,12 +35,21 @@
         </main>
 
         <footer>
-            <p>&copy; 2024 Telemedicine App</p>
+            <p>&copy; 2024 Telemedicine check App</p>
         </footer>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Check if authToken is available in localStorage
+            const authToken = localStorage.getItem('authToken');
+            if (!authToken) {
+                alert("Please log in to access the dashboard.");
+                window.location.href = 'login.html'; // Redirect to login if not authenticated
+                return;
+            }
+
+            // Retrieve patient data from localStorage
             const patientData = JSON.parse(localStorage.getItem('patientData'));
             if (!patientData) {
                 alert("No patient data found. Please log in.");
@@ -67,5 +74,4 @@
         });
     </script>
 </body>
-
 </html>

@@ -62,7 +62,7 @@ const Patient = {
         }
     },
 
-    // Find a patient by ID
+
     // Find a patient by ID
     findById: async (id) => {
         try {

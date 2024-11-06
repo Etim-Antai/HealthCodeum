@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Doctor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+        }
+        input {
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+    <h2>Register Doctor</h2>
+    <form id="doctorForm">
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" required placeholder="Enter first name">
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" required placeholder="Enter last name">
+
+        <label for="specialization">Specialization:</label>
+        <input type="text" id="specialization" name="specialization" required placeholder="Enter specialization">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required placeholder="Enter email">
+
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" required placeholder="Enter phone number">
+
+        <label for="schedule">Schedule:</label>
+        <input type="text" id="schedule" name="schedule" required placeholder="Enter schedule">
+
+        <button type="submit">Register Doctor</button>
+    </form>
+
+    <script>
+        document.getElementById("doctorForm").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            const formData = {
+                first_name: document.getElementById("first_name").value,
+                last_name: document.getElementById("last_name").value,
+                specialization: document.getElementById("specialization").value,
+                email: document.getElementById("email").value,
+                phone: document.getElementById("phone").value,
+                schedule: document.getElementById("schedule").value
+            };
+
+            try {
+                const response = await fetch("http://localhost:9900/doctors", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert("Doctor registered successfully!");
+                    document.getElementById("doctorForm").reset();
+                } else {
+                    const result = await response.json();
+                    alert("Failed to register doctor: " + result.message);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while registering the doctor." + error);
+            }
+        });
+    </script>
+</body>
+</html>

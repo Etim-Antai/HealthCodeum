@@ -1,0 +1,73 @@
+// creating a login form for patient 
+// using HTML, CSS, and JavaScript
+// Required fields: Email, Password, and Login Button
+// Email and Password should be validated using regular expressions
+// If the email and password are correct, the user should be redirected to the patient dashboard
+// If the email or password is incorrect, an error message should be displayed
+// the form data should be sent to a server-side script for validation and redirection
+// upon successful login, the user should be redirected to the patient dashboard
+// upon unsuccessful login, an error message should be displayed
+// the form should be reset after successful login or error message display
+// the form should be styled using CSS to make it visually appealing
+// the form should be responsive and work well on different screen sizes
+// the form should be accessible and usable by keyboard and screen reader users
+// the form should be fully functional and error-free
+// the form should be secure and prevent unauthorized access to the system
+// url: http://localhost/ELCODEUM/public/patientlogin.html
+// url: http:localhost:9900/patientlogin.html
+// upon successful login, the user should be redirected to the patient dashboard and fetch the patient's data from database
+// upon unsuccessful login, an error message should be displayed and the form should be reset
+// the patient's data should be displayed on the dashboard
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Patient Login</h1>
+        <form action="login.php" method="POST">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+<script>
+    // form validation using regular expressions
+// if the email and password are correct, the user should be redirected to the patient dashboard
+ const form = document.querySelector('form');
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const email = document.querySelector('#email').value;
+  const password = document.querySelector('#password').value;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+  if (!emailRegex.test(email)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  if (!passwordRegex.test(password)) {
+    alert('Please enter a valid password. Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.');
+    return;
+  }
+  form.submit();
+});
+
+
+
+
+
+
+
+
+</script>
+   
+
+</body>
+</html> 

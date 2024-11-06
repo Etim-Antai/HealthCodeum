@@ -1,10 +1,11 @@
-const express = require ('express');
+const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const session = require('express-session');
 const patientRoutes = require('./routes/patientRoutes');
-const authMiddleware = require('./middleware/authMiddleware');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const adminRoutes = require('./routes/adminRoutes'); // Add this line
 
 dotenv.config();
 
@@ -13,22 +14,24 @@ const app = express();
 // Middleware setup
 app.use(express.json());
 app.use(cors({
-    origin: '*', // Change to your frontend URL
-    credentials: true, // Allow credentials (cookies)
+    origin: '*',  // Change to your frontend URL for security
+    credentials: true,
 }));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'development', // true in production
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 1000, // 1 hour
-        sameSite: 'strict'
+        sameSite: 'lax'
     },
 }));
 
 // API routes
 app.use('/patients', patientRoutes);
+app.use('/dashboard', dashboardRoutes);
+app.use('/admin', adminRoutes); // Register the admin routes here
 
 // EJS Settings (if you're using EJS for views)
 app.use(express.static(path.join(__dirname, 'public')));

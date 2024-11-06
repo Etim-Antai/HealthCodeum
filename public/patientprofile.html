@@ -41,6 +41,13 @@
         .button:hover {
             background-color: #0056b3;
         }
+
+        /* Extra styling for spacing */
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -48,7 +55,10 @@
     <div class="container">
         <h1>Patient Profile</h1>
         <div id="profile-details" class="profile-info"></div>
-        <button class="button" id="logout-button">Logout</button>
+        <div class="button-container">
+            <button class="button" id="dashboard-button">Return to Dashboard</button>
+            <button class="button" id="update-profile-button">Update Profile</button>
+        </div>
     </div>
 
     <script>
@@ -61,6 +71,7 @@
             })
             .then(response => {
                 if (!response.ok) {
+                    console.error("Failed to fetch profile data:", response.statusText); // Log error reason
                     throw new Error("Failed to fetch profile data.");
                 }
                 return response.json();
@@ -78,13 +89,18 @@
                 `;
             })
             .catch(error => {
-                profileDetails.innerHTML = `<p>Error loading profile: ${error.message} </p>`;
+                console.error("Error loading profile:", error); // Log error
+                profileDetails.innerHTML = `<p>Error loading profile: ${error.message}</p>`;
             });
 
-            // Logout functionality
-            document.getElementById('logout-button').addEventListener('click', () => {
-                localStorage.clear(); // Clear user data from localStorage
-                window.location.href = 'http://localhost:9900/login'; // Redirect to login
+            // Redirect to Dashboard on button click
+            document.getElementById('dashboard-button').addEventListener('click', () => {
+                window.location.href = 'http://localhost:9900/dashboard2.html';
+            });
+
+            // Redirect to Update Profile on button click
+            document.getElementById('update-profile-button').addEventListener('click', () => {
+                window.location.href = 'http://localhost:9900/profilel.html';
             });
         });
     </script>
